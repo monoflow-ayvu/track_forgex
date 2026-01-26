@@ -1,11 +1,12 @@
 use rustler::NifStruct;
-use rustler::{Env, Resource, ResourceArc, Term};
+use rustler::{Env, Resource, ResourceArc, Term, NifResult, NifTuple};
 use trackforge::trackers::byte_track::ByteTrack;
+use std::sync::Mutex;
 
 rustler::atoms! { error, ok, }
 
 struct ByteTrackInstance {
-    tracker: ByteTrack,
+    tracker: Mutex<ByteTrack>,
 }
 
 impl Resource for ByteTrackInstance {}
@@ -31,8 +32,35 @@ fn create_byte_track(settings: ByteTrackSettings) -> ResourceArc<ByteTrackInstan
         settings.match_thresh,
         settings.det_thresh,
     );
-    ResourceArc::new(ByteTrackInstance { tracker })
+    ResourceArc::new(ByteTrackInstance {
+        tracker: Mutex::new(tracker),
+    })
 }
+
+#[derive(NifTuple)]
+struct DetectionInput(
+    f32, f32, f32, f32,  // x, y, w, h
+    f32,                 // score
+    i64,                 // class_id
+);
+
+#[rustler::nif]
+fn byte_track_update(
+    instance: ResourceArc<ByteTrackInstance>,
+    detections: Vec<DetectionInput>,
+) -> NifResult<()> {
+    let detections_converted: Vec<([f32; 4], f32, i64)> = detections
+        .into_iter()
+        .map(|DetectionInput(x, y, w, h, score, class_id)| {
+            ([x, y, w, h], score, class_id)
+        })
+        .collect();
+
+    let mut tracker = instance.tracker.lock().map_err(|_| rustler::Error::Term(Box::new("Mutex lock poisoned")))?;
+    tracker.update(detections_converted);
+    Ok(())
+}
+
 
 fn load(env: Env, _term: Term) -> bool {
     env.register::<ByteTrackInstance>().unwrap();
