@@ -1,4 +1,4 @@
-use rustler::NifStruct;
+use rustler::{NifStruct, NifUnitEnum};
 use rustler::{Env, Resource, ResourceArc, Term, NifResult, NifTuple};
 use trackforge::trackers::byte_track::ByteTrack;
 use std::sync::Mutex;
@@ -38,27 +38,82 @@ fn create_byte_track(settings: ByteTrackSettings) -> ResourceArc<ByteTrackInstan
 }
 
 #[derive(NifTuple)]
-struct DetectionInput(
+struct ByteTrackDetectionInput(
     f32, f32, f32, f32,  // x, y, w, h
     f32,                 // score
     i64,                 // class_id
 );
 
+#[derive(Debug, Clone, PartialEq, Eq, Copy, NifUnitEnum)]
+pub enum ByteTrackerDetectionState {
+    New,
+    Tracked,
+    Lost,
+    Removed,
+}
+
+#[derive(Debug, Clone, NifStruct)]
+#[module = "TrackForgex.Trackers.ByteTrackDetectionResult"]
+struct ByteTrackDetectionResult {
+    /// Bounding
+    x: f32,
+    y: f32,
+    w: f32,
+    h: f32,
+    /// Detection confidence score.
+    score: f32,
+    /// Class ID of the object.
+    class_id: i64,
+    /// Unique track ID.
+    track_id: u64,
+    /// Current tracking state (New, Tracked, Lost, Removed).
+    state: ByteTrackerDetectionState,
+    /// Whether the track is currently activated (confirmed).
+    is_activated: bool,
+    /// Current frame ID.
+    frame_id: usize,
+    /// Frame ID where the track started.
+    start_frame: usize,
+    /// Length of the tracklet (number of frames tracked).
+    tracklet_len: usize
+}
+
 #[rustler::nif]
 fn byte_track_update(
     instance: ResourceArc<ByteTrackInstance>,
-    detections: Vec<DetectionInput>,
-) -> NifResult<()> {
+    detections: Vec<ByteTrackDetectionInput>,
+) -> NifResult<Vec<ByteTrackDetectionResult>> {
     let detections_converted: Vec<([f32; 4], f32, i64)> = detections
         .into_iter()
-        .map(|DetectionInput(x, y, w, h, score, class_id)| {
+        .map(|ByteTrackDetectionInput(x, y, w, h, score, class_id)| {
             ([x, y, w, h], score, class_id)
         })
         .collect();
 
     let mut tracker = instance.tracker.lock().map_err(|_| rustler::Error::Term(Box::new("Mutex lock poisoned")))?;
-    tracker.update(detections_converted);
-    Ok(())
+    let results = tracker.update(detections_converted);
+    let results_converted: Vec<ByteTrackDetectionResult> = results.into_iter().map(|result| {
+        ByteTrackDetectionResult {
+            x: result.tlwh[0],
+            y: result.tlwh[1],
+            w: result.tlwh[2],
+            h: result.tlwh[3],
+            score: result.score,
+            class_id: result.class_id,
+            track_id: result.track_id,
+            state: match result.state {
+                trackforge::trackers::byte_track::TrackState::New => ByteTrackerDetectionState::New,
+                trackforge::trackers::byte_track::TrackState::Tracked => ByteTrackerDetectionState::Tracked,
+                trackforge::trackers::byte_track::TrackState::Lost => ByteTrackerDetectionState::Lost,
+                trackforge::trackers::byte_track::TrackState::Removed => ByteTrackerDetectionState::Removed,
+            },
+            is_activated: result.is_activated,
+            frame_id: result.frame_id,
+            start_frame: result.start_frame,
+            tracklet_len: result.tracklet_len,
+        }
+    }).collect();
+    Ok(results_converted)
 }
 
 
