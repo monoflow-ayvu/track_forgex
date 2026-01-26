@@ -1,4 +1,4 @@
-defmodule TrackForgex.Trackers.ByteTrack do
+defmodule TrackForgex.Trackers.ByteTrackSettings do
   @moduledoc """
   ByteTrack tracker implementation.
   """

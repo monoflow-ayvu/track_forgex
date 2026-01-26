@@ -3,14 +3,6 @@
 version = 4
 
 [[package]]
-name = "TrackForgex"
-version = "0.1.0"
-dependencies = [
- "rustler",
- "trackforge",
-]
-
-[[package]]
 name = "adler2"
 version = "2.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1117,6 +1109,14 @@ dependencies = [
  "quick-error",
  "weezl",
  "zune-jpeg 0.4.21",
+]
+
+[[package]]
+name = "track_forgex"
+version = "0.1.0"
+dependencies = [
+ "rustler",
+ "trackforge",
 ]
 
 [[package]]

@@ -31,5 +31,4 @@ track_forgex-*.tar
 priv/static/assets/
 .elixir_ls
 .expert
-priv/native/trackforge.so
-
+priv/native/*.so
