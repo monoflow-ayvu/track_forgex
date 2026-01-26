@@ -9,3 +9,4 @@ crate-type = ["cdylib"]
 
 [dependencies]
 rustler = "0.37.2"
+trackforge = "0.1.8"
