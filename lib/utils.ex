@@ -12,18 +12,16 @@ defmodule TrackForgex.Utils.BBox do
   end
 
   @type t() :: %__MODULE__{
-    x: float(),
-    y: float(),
-    w: float(),
-    h: float()
-  }
+          x: float(),
+          y: float(),
+          w: float(),
+          h: float()
+        }
 
-  defstruct [
-    x: 0.0,
-    y: 0.0,
-    w: 0.0,
-    h: 0.0
-  ]
+  defstruct x: 0.0,
+            y: 0.0,
+            w: 0.0,
+            h: 0.0
 end
 
 defimpl String.Chars, for: TrackForgex.Utils.BBox do
@@ -31,7 +29,6 @@ defimpl String.Chars, for: TrackForgex.Utils.BBox do
     "BBox(x: #{value.x}, y: #{value.y}, w: #{value.w}, h: #{value.h})"
   end
 end
-
 
 defmodule TrackForgex.Utils.Detection do
   @moduledoc """
@@ -47,16 +44,14 @@ defmodule TrackForgex.Utils.Detection do
   end
 
   @type t() :: %__MODULE__{
-    bbox: TrackForgex.Utils.BBox.t(),
-    score: float(),
-    class_id: integer()
-  }
+          bbox: TrackForgex.Utils.BBox.t(),
+          score: float(),
+          class_id: integer()
+        }
 
-  defstruct [
-    bbox: %TrackForgex.Utils.BBox{x: 0.0, y: 0.0, w: 0.0, h: 0.0},
-    score: 0.0,
-    class_id: 0
-  ]
+  defstruct bbox: %TrackForgex.Utils.BBox{x: 0.0, y: 0.0, w: 0.0, h: 0.0},
+            score: 0.0,
+            class_id: 0
 end
 
 defimpl String.Chars, for: TrackForgex.Utils.Detection do

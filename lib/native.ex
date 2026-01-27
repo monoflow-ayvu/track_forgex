@@ -4,7 +4,8 @@ defmodule TrackForgex.Native do
   @doc """
   Create a new byte track instance.
   """
-  def create_byte_track(%TrackForgex.Trackers.ByteTrack.Settings{} = _settings), do: :erlang.nif_error(:nif_not_loaded)
+  def create_byte_track(%TrackForgex.Trackers.ByteTrack.Settings{} = _settings),
+    do: :erlang.nif_error(:nif_not_loaded)
 
   @doc """
   Update the byte track instance with new detections.
