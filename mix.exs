@@ -10,7 +10,25 @@ defmodule TrackForgex.MixProject do
       elixir: "~> 1.18",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      aliases: aliases()
+      aliases: aliases(),
+      description: "A port of trackforge from Rust to Elixir using Rustler.",
+      docs: [extras: ["README.md", "CHANGELOG.md"],
+            source_ref: "v#{@version}"],
+      source_url: "https://github.com/monoflow-ayvu/track_forgex",
+      package: [
+        files: [
+          "lib",
+          "mix.exs",
+          "README.md",
+          "CHANGELOG.md",
+          "LICENSE",
+          "VERSION",
+          "native",
+        ],
+        maintainers: ["Fernando Mumbach"],
+        licenses: ["MIT"],
+        links: %{"GitHub" => "https://github.com/monoflow-ayvu/track_forgex"}
+      ]
     ]
   end
 
