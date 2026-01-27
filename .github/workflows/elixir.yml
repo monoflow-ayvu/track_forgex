@@ -78,8 +78,8 @@ jobs:
       - name: Install dependencies
         run: devenv shell --verbose mix deps.get
       - name: Build in release mode
-        run: MIX_ENV=prod devenv shell --verbose mix compile
+        run: devenv shell --verbose mix compile
       - name: Publish to Hex.pm
-        run: MIX_ENV=prod devenv shell --verbose mix hex.publish --yes
+        run: devenv shell --verbose mix hex.publish --yes
         env:
           HEX_API_KEY: ${{ secrets.HEX_API_KEY }}
