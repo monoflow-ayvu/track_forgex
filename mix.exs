@@ -12,8 +12,7 @@ defmodule TrackForgex.MixProject do
       deps: deps(),
       aliases: aliases(),
       description: "A port of trackforge from Rust to Elixir using Rustler.",
-      docs: [extras: ["README.md", "CHANGELOG.md"],
-            source_ref: "v#{@version}"],
+      docs: [extras: ["README.md", "CHANGELOG.md"], source_ref: "v#{@version}"],
       source_url: "https://github.com/monoflow-ayvu/track_forgex",
       package: [
         files: [
@@ -23,7 +22,7 @@ defmodule TrackForgex.MixProject do
           "CHANGELOG.md",
           "LICENSE",
           "VERSION",
-          "native",
+          "native"
         ],
         maintainers: ["Fernando Mumbach"],
         licenses: ["MIT"],
