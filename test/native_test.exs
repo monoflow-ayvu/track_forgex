@@ -1,8 +1,8 @@
 defmodule NativeTest do
   use ExUnit.Case
 
-  alias TrackForgex.Trackers.ByteTrack
   alias TrackForgex.Native
+  alias TrackForgex.Trackers.ByteTrack
 
   doctest Native
 

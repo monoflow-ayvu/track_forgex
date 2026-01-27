@@ -1,4 +1,9 @@
 defmodule TrackForgex.Native do
+  @moduledoc """
+  Native interface to the TrackForgex library.
+
+  Do not use this module directly, use the `TrackForgex.Trackers.ByteTrack` module instead.
+  """
   use Rustler, otp_app: :track_forgex, crate: :track_forgex
 
   @doc """

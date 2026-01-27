@@ -1,0 +1,48 @@
+name: Elixir CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+      - uses: cachix/install-nix-action@v31
+        with:
+          nix_path: nixpkgs=channel:nixos-25.05
+      - uses: cachix/cachix-action@v16
+        with:
+          name: devenv
+      - name: Install devenv.sh
+        run: nix profile install nixpkgs#devenv
+      - name: Restore nix cache
+        uses: DeterminateSystems/magic-nix-cache-action@main
+      - name: Restore dependencies cache
+        uses: actions/cache@v5
+        with:
+          path: |
+            deps
+            _build
+          key: ${{ runner.os }}-mix-${{ env.elixir }}-${{ env.otp }}-${{ hashFiles('**/mix.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-mix-${{ env.elixir }}-${{ env.otp }}-
+      - name: Install dependencies
+        run: devenv shell --verbose mix do deps.get + deps.compile
+      - name: Compile dependencies
+        run: devenv shell --verbose mix compile
+      - name: Static Analysis & Formatting
+        run: devenv shell --verbose mix check --ignore todo
+      - name: Check warnings
+        run: devenv shell --verbose mix compile --warnings-as-errors
+      - name: Run tests
+        run: devenv shell --verbose mix test
+

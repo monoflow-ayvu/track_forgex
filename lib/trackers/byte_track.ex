@@ -17,10 +17,10 @@ defmodule TrackForgex.Trackers.ByteTrack do
   running at 30 FPS on a single GPU.
   """
 
-  alias TrackForgex.Trackers.ByteTrack.Settings
-  alias TrackForgex.Trackers.ByteTrack.DetectionResult
-  alias TrackForgex.Utils.Detection
   alias TrackForgex.Native
+  alias TrackForgex.Trackers.ByteTrack.DetectionResult
+  alias TrackForgex.Trackers.ByteTrack.Settings
+  alias TrackForgex.Utils.Detection
 
   @doc """
   Create a new ByteTracker instance.

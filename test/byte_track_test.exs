@@ -3,10 +3,12 @@ defmodule TrackForgex.Trackers.ByteTrackTest do
 
   doctest TrackForgex.Trackers.ByteTrack
 
+  alias TrackForgex.Trackers.ByteTrack
+
   describe "usage tests" do
     test "basic usage" do
       # Initialize settings for ByteTrack
-      settings = %TrackForgex.Trackers.ByteTrack.Settings{
+      settings = %ByteTrack.Settings{
         track_thresh: 0.5,
         track_buffer: 30,
         match_thresh: 0.8,
@@ -14,7 +16,7 @@ defmodule TrackForgex.Trackers.ByteTrackTest do
       }
 
       # Create a new ByteTrack instance
-      byte_track = TrackForgex.Trackers.ByteTrack.new(settings)
+      byte_track = ByteTrack.new(settings)
 
       # Simulated detection input for Frame 1: [x, y, w, h], score, class_id
       frame_1_detections = [
@@ -31,7 +33,7 @@ defmodule TrackForgex.Trackers.ByteTrackTest do
       ]
 
       # Update tracker with first frame
-      tracks_1 = TrackForgex.Trackers.ByteTrack.update(byte_track, frame_1_detections)
+      tracks_1 = ByteTrack.update(byte_track, frame_1_detections)
 
       # Assert expected number of tracks
       assert length(tracks_1) == 2
@@ -51,7 +53,7 @@ defmodule TrackForgex.Trackers.ByteTrackTest do
       ]
 
       # Update tracker with second frame
-      tracks_2 = TrackForgex.Trackers.ByteTrack.update(byte_track, frame_2_detections)
+      tracks_2 = ByteTrack.update(byte_track, frame_2_detections)
 
       # Assert expected number of tracks in second frame
       assert length(tracks_2) == 2
