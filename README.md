@@ -187,6 +187,10 @@ cargo build
 
 MIT License - see LICENSE file for details
 
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for a list of changes.
+
 ## Contributing
 
 Contributions are welcome! Please ensure all tests pass before submitting a pull request.
