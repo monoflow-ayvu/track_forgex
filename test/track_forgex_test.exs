@@ -32,14 +32,11 @@ defmodule TrackForgexTest do
     assert byte_track != nil
     assert is_reference(byte_track)
 
-    results =
+    _results =
       Native.byte_track_update(byte_track, [
         {
           # x, y, w, h
-          0,
-          0,
-          0,
-          0,
+          %TrackForgex.Utils.BBox{x: 0, y: 1, w: 0, h: 0},
           # score
           0.9,
           # class_id
@@ -51,23 +48,17 @@ defmodule TrackForgexTest do
       Native.byte_track_update(byte_track, [
         {
           # x, y, w, h
-          0,
-          1,
-          0,
-          0,
+          %TrackForgex.Utils.BBox{x: 0, y: 1, w: 0, h: 0},
           # score
           0.5,
           # class_id
-          0
+          1
         }
       ])
 
     assert results == [
              %ByteTrackDetectionResult{
-               x: 0.0,
-               y: 1.0,
-               w: 0.0,
-               h: 0.0,
+               bbox: %TrackForgex.Utils.BBox{x: 0, y: 1, w: 0, h: 0},
                score: 0.5,
                class_id: 0,
                track_id: 1,

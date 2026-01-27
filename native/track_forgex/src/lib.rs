@@ -5,6 +5,15 @@ use std::sync::Mutex;
 
 rustler::atoms! { error, ok, }
 
+#[derive(Debug, Clone, NifStruct)]
+#[module = "TrackForgex.Utils.BBox"]
+struct BBox {
+    x: f32,
+    y: f32,
+    w: f32,
+    h: f32,
+}
+
 struct ByteTrackInstance {
     tracker: Mutex<ByteTrack>,
 }
@@ -37,9 +46,9 @@ fn create_byte_track(settings: ByteTrackSettings) -> ResourceArc<ByteTrackInstan
     })
 }
 
-#[derive(NifTuple)]
+#[derive(Debug, Clone, NifTuple)]
 struct ByteTrackDetectionInput(
-    f32, f32, f32, f32,  // x, y, w, h
+    BBox,  // x, y, w, h
     f32,                 // score
     i64,                 // class_id
 );
@@ -56,10 +65,7 @@ pub enum ByteTrackerDetectionState {
 #[module = "TrackForgex.Trackers.ByteTrackDetectionResult"]
 struct ByteTrackDetectionResult {
     /// Bounding
-    x: f32,
-    y: f32,
-    w: f32,
-    h: f32,
+    bbox: BBox,
     /// Detection confidence score.
     score: f32,
     /// Class ID of the object.
@@ -85,8 +91,8 @@ fn byte_track_update(
 ) -> NifResult<Vec<ByteTrackDetectionResult>> {
     let detections_converted: Vec<([f32; 4], f32, i64)> = detections
         .into_iter()
-        .map(|ByteTrackDetectionInput(x, y, w, h, score, class_id)| {
-            ([x, y, w, h], score, class_id)
+        .map(|ByteTrackDetectionInput(bbox, score, class_id)| {
+            ([bbox.x, bbox.y, bbox.w, bbox.h], score, class_id)
         })
         .collect();
 
@@ -94,10 +100,12 @@ fn byte_track_update(
     let results = tracker.update(detections_converted);
     let results_converted: Vec<ByteTrackDetectionResult> = results.into_iter().map(|result| {
         ByteTrackDetectionResult {
-            x: result.tlwh[0],
-            y: result.tlwh[1],
-            w: result.tlwh[2],
-            h: result.tlwh[3],
+            bbox: BBox {
+                x: result.tlwh[0],
+                y: result.tlwh[1],
+                w: result.tlwh[2],
+                h: result.tlwh[3],
+            },
             score: result.score,
             class_id: result.class_id,
             track_id: result.track_id,

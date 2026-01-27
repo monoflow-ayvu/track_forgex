@@ -17,10 +17,7 @@ defmodule TrackForgex.Trackers.ByteTrackDetectionResult do
   """
 
   defstruct [
-    x: 0.0,
-    y: 0.0,
-    w: 0.0,
-    h: 0.0,
+    bbox: %TrackForgex.Utils.BBox{x: 0, y: 0, w: 0, h: 0},
     score: 0.0,
     class_id: 0,
     track_id: 0,
