@@ -1,5 +1,5 @@
 use rustler::{NifStruct, NifUnitEnum};
-use rustler::{Env, Resource, ResourceArc, Term, NifResult, NifTuple};
+use rustler::{Env, Resource, ResourceArc, Term, NifResult};
 use trackforge::trackers::byte_track::ByteTrack;
 use std::sync::Mutex;
 
@@ -14,6 +14,14 @@ struct BBox {
     h: f32,
 }
 
+#[derive(Debug, Clone, NifStruct)]
+#[module = "TrackForgex.Utils.Detection"]
+struct Detection {
+    bbox: BBox,
+    score: f32,
+    class_id: i64,
+}
+
 struct ByteTrackInstance {
     tracker: Mutex<ByteTrack>,
 }
@@ -21,7 +29,7 @@ struct ByteTrackInstance {
 impl Resource for ByteTrackInstance {}
 
 #[derive(Debug, NifStruct)]
-#[module = "TrackForgex.Trackers.ByteTrackSettings"]
+#[module = "TrackForgex.Trackers.ByteTrack.Settings"]
 struct ByteTrackSettings {
     /// Threshold for high confidence detections (e.g., 0.5 or 0.6).
     track_thresh: f32,
@@ -46,13 +54,6 @@ fn create_byte_track(settings: ByteTrackSettings) -> ResourceArc<ByteTrackInstan
     })
 }
 
-#[derive(Debug, Clone, NifTuple)]
-struct ByteTrackDetectionInput(
-    BBox,  // x, y, w, h
-    f32,                 // score
-    i64,                 // class_id
-);
-
 #[derive(Debug, Clone, PartialEq, Eq, Copy, NifUnitEnum)]
 pub enum ByteTrackerDetectionState {
     New,
@@ -62,7 +63,7 @@ pub enum ByteTrackerDetectionState {
 }
 
 #[derive(Debug, Clone, NifStruct)]
-#[module = "TrackForgex.Trackers.ByteTrackDetectionResult"]
+#[module = "TrackForgex.Trackers.ByteTrack.DetectionResult"]
 struct ByteTrackDetectionResult {
     /// Bounding
     bbox: BBox,
@@ -87,11 +88,11 @@ struct ByteTrackDetectionResult {
 #[rustler::nif]
 fn byte_track_update(
     instance: ResourceArc<ByteTrackInstance>,
-    detections: Vec<ByteTrackDetectionInput>,
+    detections: Vec<Detection>,
 ) -> NifResult<Vec<ByteTrackDetectionResult>> {
     let detections_converted: Vec<([f32; 4], f32, i64)> = detections
         .into_iter()
-        .map(|ByteTrackDetectionInput(bbox, score, class_id)| {
+        .map(|Detection { bbox, score, class_id }| {
             ([bbox.x, bbox.y, bbox.w, bbox.h], score, class_id)
         })
         .collect();
