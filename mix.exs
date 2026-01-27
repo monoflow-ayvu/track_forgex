@@ -40,7 +40,8 @@ defmodule TrackForgex.MixProject do
   defp deps do
     [
       {:rustler, "~> 0.37.1", runtime: false},
-      {:credo, "~> 1.7", only: [:dev, :test], runtime: false}
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
     ]
   end
 
