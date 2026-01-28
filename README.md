@@ -47,7 +47,7 @@ iex> settings = %TrackForgex.Trackers.ByteTrack.Settings{
 ...> }
 iex> tracker = TrackForgex.Trackers.ByteTrack.new(settings)
 iex> # Process detections from a detector
-...> detections = [
+iex> detections = [
 ...>   %TrackForgex.Utils.Detection{
 ...>     bbox: %TrackForgex.Utils.BBox{x: 10.0, y: 20.0, w: 100.0, h: 50.0},
 ...>     score: 0.9,
