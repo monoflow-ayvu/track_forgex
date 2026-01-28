@@ -54,7 +54,7 @@ defmodule NativeTest do
                score: 0.8999999761581421,
                start_frame: 1,
                state: :tracked,
-               track_id: 1,
+               track_id: 3,
                tracklet_len: 0
              }
            ]

@@ -38,62 +38,55 @@ mix deps.compile
 ### Basic Usage
 
 ```elixir
-import TrackForgex.Trackers.ByteTrack
-import TrackForgex.Utils
-
-# Create a ByteTracker instance with custom settings
-settings = %TrackForgex.Trackers.ByteTrack.Settings{
-  track_thresh: 0.5,
-  track_buffer: 30,
-  match_thresh: 0.8,
-  det_thresh: 0.6
-}
-
-tracker = new(settings)
-
-# Process detections from a detector
-detections = [
-  %TrackForgex.Utils.Detection{
+iex> # Create a ByteTracker instance with custom settings
+iex> settings = %TrackForgex.Trackers.ByteTrack.Settings{
+...>   track_thresh: 0.5,
+...>   track_buffer: 30,
+...>   match_thresh: 0.8,
+...>   det_thresh: 0.6
+...> }
+iex> tracker = TrackForgex.Trackers.ByteTrack.new(settings)
+iex> # Process detections from a detector
+...> detections = [
+...>   %TrackForgex.Utils.Detection{
+...>     bbox: %TrackForgex.Utils.BBox{x: 10.0, y: 20.0, w: 100.0, h: 50.0},
+...>     score: 0.9,
+...>     class_id: 0
+...>   },
+...>   %TrackForgex.Utils.Detection{
+...>     bbox: %TrackForgex.Utils.BBox{x: 150.0, y: 30.0, w: 80.0, h: 60.0},
+...>     score: 0.85,
+...>     class_id: 0
+...>   }
+...> ]
+iex> # Update tracker and get results
+iex> results = TrackForgex.Trackers.ByteTrack.update(tracker, detections)
+iex> # Results contain track IDs, states, and positions
+iex> results
+[
+  %TrackForgex.Trackers.ByteTrack.DetectionResult{
     bbox: %TrackForgex.Utils.BBox{x: 10.0, y: 20.0, w: 100.0, h: 50.0},
-    score: 0.9,
-    class_id: 0
+    score: 0.8999999761581421,
+    class_id: 0,
+    track_id: 1,
+    state: :tracked,
+    is_activated: true,
+    frame_id: 1,
+    start_frame: 1,
+    tracklet_len: 0
   },
-  %TrackForgex.Utils.Detection{
+  %TrackForgex.Trackers.ByteTrack.DetectionResult{
     bbox: %TrackForgex.Utils.BBox{x: 150.0, y: 30.0, w: 80.0, h: 60.0},
-    score: 0.85,
-    class_id: 0
+    score: 0.8500000238418579,
+    class_id: 0,
+    track_id: 2,
+    state: :tracked,
+    is_activated: true,
+    frame_id: 1,
+    start_frame: 1,
+    tracklet_len: 0
   }
 ]
-
-# Update tracker and get results
-results = update(tracker, detections)
-
-# Results contain track IDs, states, and trajectories
-results
-# => [
-#      %TrackForgex.Trackers.ByteTrack.DetectionResult{
-#        bbox: %TrackForgex.Utils.BBox{x: 10.0, y: 20.0, w: 100.0, h: 50.0},
-#        score: 0.9,
-#        class_id: 0,
-#        track_id: 1,
-#        state: :tracked,
-#        is_activated: true,
-#        frame_id: 10,
-#        start_frame: 8,
-#        tracklet_len: 3
-#      },
-#      %TrackForgex.Trackers.ByteTrack.DetectionResult{
-#        bbox: %TrackForgex.Utils.BBox{x: 150.0, y: 30.0, w: 80.0, h: 60.0},
-#        score: 0.85,
-#        class_id: 0,
-#        track_id: 2,
-#        state: :tracked,
-#        is_activated: true,
-#        frame_id: 10,
-#        start_frame: 10,
-#        tracklet_len: 1
-#      }
-#    ]
 ```
 
 ### Configuration
