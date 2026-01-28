@@ -3,5 +3,5 @@ defmodule TrackForgexTest do
 
   doctest TrackForgex
 
-  doctest_file "README.md"
+  doctest_file("README.md")
 end
