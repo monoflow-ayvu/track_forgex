@@ -15,16 +15,16 @@ defmodule TrackForgex.MixProject do
       docs: [extras: ["README.md", "CHANGELOG.md"], source_ref: "v#{@version}"],
       source_url: "https://github.com/monoflow-ayvu/track_forgex",
       package: [
-        files: [
-          "lib",
-          "mix.exs",
-          "README.md",
-          "CHANGELOG.md",
-          "LICENSE",
-          "VERSION",
-          "native",
-          "checksum-*.exs"
-        ],
+        files:
+          [
+            "lib",
+            "mix.exs",
+            "README.md",
+            "CHANGELOG.md",
+            "LICENSE",
+            "VERSION",
+            "checksum-*.exs"
+          ] ++ native_files(),
         maintainers: ["Fernando Mumbach"],
         licenses: ["MIT"],
         links: %{"GitHub" => "https://github.com/monoflow-ayvu/track_forgex"}
@@ -55,5 +55,13 @@ defmodule TrackForgex.MixProject do
         "credo suggest --strict --all"
       ]
     ]
+  end
+
+  defp native_files do
+    {out, 0} = System.cmd("git", ["ls-files", "native"])
+
+    out
+    |> String.split("\n")
+    |> Enum.filter(&(&1 != ""))
   end
 end
