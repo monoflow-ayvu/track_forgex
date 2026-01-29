@@ -4,7 +4,15 @@ defmodule TrackForgex.Native do
 
   Do not use this module directly, use the `TrackForgex.Trackers.ByteTrack` module instead.
   """
-  use Rustler, otp_app: :track_forgex, crate: :track_forgex
+  @version Mix.Project.config()[:version]
+
+  use RustlerPrecompiled,
+    otp_app: :track_forgex,
+    crate: "track_forgex",
+    base_url:
+      "https://github.com/monoflow-ayvu/track_forgex/releases/download/v#{@version}",
+    force_build: System.get_env("TRACK_FORGE_FORCE_BUILD") in ["1", "true"],
+    version: @version
 
   @doc """
   Create a new byte track instance.

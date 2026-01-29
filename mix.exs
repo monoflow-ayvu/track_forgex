@@ -22,7 +22,8 @@ defmodule TrackForgex.MixProject do
           "CHANGELOG.md",
           "LICENSE",
           "VERSION",
-          "native"
+          "native",
+          "checksum-*.exs",
         ],
         maintainers: ["Fernando Mumbach"],
         licenses: ["MIT"],
@@ -39,7 +40,8 @@ defmodule TrackForgex.MixProject do
 
   defp deps do
     [
-      {:rustler, "~> 0.37.1", runtime: false},
+      {:rustler_precompiled, "~> 0.8"},
+      {:rustler, "~> 0.37.1", optional: true},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
     ]
