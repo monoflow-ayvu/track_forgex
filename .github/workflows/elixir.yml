@@ -16,6 +16,8 @@ jobs:
   build:
     name: Build and Test
     runs-on: ubuntu-latest
+    env:
+      TRACK_FORGE_FORCE_BUILD: 1
     steps:
       - uses: actions/checkout@v6
       - uses: cachix/install-nix-action@v31
