@@ -78,6 +78,7 @@ jobs:
           variant: ${{ matrix.job.variant }}
         env:
           RUSTFLAGS: ${{ matrix.job.rustflags }}
+          CARGO_TARGET_DIR: target/${{ matrix.job.target }}/release
 
       - name: Artifact attestation
         uses: actions/attest-build-provenance@v1
