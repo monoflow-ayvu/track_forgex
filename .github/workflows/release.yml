@@ -98,9 +98,50 @@ jobs:
           files: |
             ${{ steps.build-crate.outputs.file-path }}
         if: startsWith(github.ref, 'refs/tags/v')
-      
+
+  publish_hex:
+    name: Publish to Hex.pm
+    runs-on: ubuntu-latest
+    needs: build_release
+    if: startsWith(github.ref, 'refs/tags/')
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31
+        with:
+          nix_path: nixpkgs=channel:nixos-25.05
+      - uses: cachix/cachix-action@v16
+        with:
+          name: devenv
+      - name: Install devenv.sh
+        run: nix profile install nixpkgs#devenv
+      - name: Restore nix cache
+        uses: DeterminateSystems/magic-nix-cache-action@main
+      - name: Restore dependencies cache
+        uses: actions/cache@v5
+        with:
+          path: |
+            deps
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+          key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-mix-
+      - uses: Swatinem/rust-cache@v2
+        with:
+          prefix-key: v0-precomp
+          shared-key: hex-publish
+          workspaces: |
+            native/track_forgex
+      - name: Install dependencies
+        run: devenv shell --verbose mix do deps.get + deps.compile
+      - name: Compile dependencies
+        run: devenv shell --verbose mix compile
       - name: Publish to Hex.pm
         run: devenv shell --verbose mix hex.publish --yes
         env:
           HEX_API_KEY: ${{ secrets.HEX_API_KEY }}
-        if: startsWith(github.ref, 'refs/tags/')
