@@ -10,5 +10,11 @@ edition = "2021"
 crate-type = ["cdylib"]
 
 [dependencies]
-rustler = "0.37.2"
+rustler = { version = "0.37.2", default-features = false, features = ["derive"] }
 trackforge = "0.1.8"
+
+[features]
+default = ["nif_version_2_15"]
+nif_version_2_15 = ["rustler/nif_version_2_15"]
+nif_version_2_16 = ["rustler/nif_version_2_16"]
+nif_version_2_17 = ["rustler/nif_version_2_17"]
