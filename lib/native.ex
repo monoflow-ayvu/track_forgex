@@ -9,8 +9,7 @@ defmodule TrackForgex.Native do
   use RustlerPrecompiled,
     otp_app: :track_forgex,
     crate: "track_forgex",
-    base_url:
-      "https://github.com/monoflow-ayvu/track_forgex/releases/download/v#{@version}",
+    base_url: "https://github.com/monoflow-ayvu/track_forgex/releases/download/v#{@version}",
     force_build: System.get_env("TRACK_FORGE_FORCE_BUILD") in ["1", "true"],
     version: @version
 

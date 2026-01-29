@@ -23,7 +23,7 @@ defmodule TrackForgex.MixProject do
           "LICENSE",
           "VERSION",
           "native",
-          "checksum-*.exs",
+          "checksum-*.exs"
         ],
         maintainers: ["Fernando Mumbach"],
         licenses: ["MIT"],
