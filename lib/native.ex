@@ -11,7 +11,21 @@ defmodule TrackForgex.Native do
     crate: "track_forgex",
     base_url: "https://github.com/monoflow-ayvu/track_forgex/releases/download/v#{@version}",
     force_build: System.get_env("TRACK_FORGE_FORCE_BUILD") in ["1", "true"],
-    version: @version
+    version: @version,
+    nif_versions: ~w(2.15 2.16 2.17),
+    targets: ~w(
+      aarch64-apple-darwin
+      aarch64-unknown-linux-gnu
+      aarch64-unknown-linux-musl
+      arm-unknown-linux-gnueabihf
+      riscv64gc-unknown-linux-gnu
+      riscv64gc-unknown-linux-musl
+      x86_64-apple-darwin
+      x86_64-pc-windows-gnu
+      x86_64-pc-windows-msvc
+      x86_64-unknown-linux-gnu
+      x86_64-unknown-linux-musl
+    )
 
   @doc """
   Create a new byte track instance.
