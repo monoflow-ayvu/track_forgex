@@ -1,5 +1,7 @@
 [package]
 name = "track_forgex"
+# We don't use versioning in the in this crate.
+# Please check the `mix.exs` file at the root of this project for the current version.
 version = "0.1.0"
 authors = []
 edition = "2021"

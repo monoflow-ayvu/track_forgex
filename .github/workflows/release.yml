@@ -27,16 +27,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        nif: ["2.15"]
+        nif: ["2.16", "2.15"]
         job:
           - { target: arm-unknown-linux-gnueabihf , os: ubuntu-22.04 , use-cross: true }
           - { target: aarch64-unknown-linux-gnu   , os: ubuntu-22.04 , use-cross: true }
-          - { target: aarch64-unknown-linux-musl  , os: ubuntu-22.04 , use-cross: true }
+          - { target: aarch64-unknown-linux-musl  , os: ubuntu-22.04 , use-cross: true, rustflags: "-C target-feature=-crt-static" }
           - { target: aarch64-apple-darwin        , os: macos-15      }
           - { target: riscv64gc-unknown-linux-gnu , os: ubuntu-22.04 , use-cross: true }
           - { target: x86_64-apple-darwin         , os: macos-15      }
           - { target: x86_64-unknown-linux-gnu    , os: ubuntu-22.04  }
-          - { target: x86_64-unknown-linux-musl   , os: ubuntu-22.04 , use-cross: true }
+          - { target: x86_64-unknown-linux-musl   , os: ubuntu-22.04 , use-cross: true, rustflags: "-C target-feature=-crt-static" }
           - { target: x86_64-pc-windows-gnu       , os: windows-2025  }
           - { target: x86_64-pc-windows-msvc      , os: windows-2025  }
 
@@ -50,10 +50,11 @@ jobs:
           # Get the project version from mix.exs
           echo "PROJECT_VERSION=$(cat VERSION | head -n1)" >> $GITHUB_ENV
 
-      - name: Add target
-        shell: bash
-        run: |
-          rustup target add ${{ matrix.job.target }}
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+          target: ${{ matrix.job.target }}
 
       - uses: Swatinem/rust-cache@v2
         with:
@@ -75,6 +76,8 @@ jobs:
           project-dir: "native/track_forgex"
           cargo-args: ${{ matrix.job.cargo-args }}
           variant: ${{ matrix.job.variant }}
+        env:
+          RUSTFLAGS: ${{ matrix.job.rustflags }}
 
       - name: Artifact attestation
         uses: actions/attest-build-provenance@v1
