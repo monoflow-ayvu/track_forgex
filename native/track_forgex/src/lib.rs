@@ -85,7 +85,7 @@ struct ByteTrackDetectionResult {
     tracklet_len: usize
 }
 
-#[rustler::nif]
+#[rustler::nif(schedule = "DirtyCpu")]
 fn byte_track_update(
     instance: ResourceArc<ByteTrackInstance>,
     detections: Vec<Detection>,
