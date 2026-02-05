@@ -1122,8 +1122,7 @@ dependencies = [
 [[package]]
 name = "trackforge"
 version = "0.1.8"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "daceb36f3fc63af3b353d3c9750afd08b3305c28024169e6f8f6abee9f25570a"
+source = "git+https://github.com/fermuch/trackforge.git?branch=main#10d642255c27f9a4f52a1d0425705cdc751340bd"
 dependencies = [
  "image",
  "nalgebra",

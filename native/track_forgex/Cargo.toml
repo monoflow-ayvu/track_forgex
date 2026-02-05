@@ -11,7 +11,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 rustler = { version = "0.37.2", default-features = false, features = ["derive"] }
-trackforge = "0.1.8"
+trackforge = { git = "https://github.com/fermuch/trackforge.git", branch = "main" }
 
 [features]
 default = ["nif_version_2_15"]

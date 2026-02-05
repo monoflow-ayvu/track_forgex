@@ -131,8 +131,9 @@ defmodule TrackForgex.Trackers.ByteTrackTest do
       }
     ]
 
-    assert [car_track] = ByteTrack.update(byte_track, car_detection)
+    assert [car_track, person_track] = ByteTrack.update(byte_track, car_detection)
     assert car_track.class_id == 2
+    assert person_track.class_id == 0
 
     assert car_track.track_id != person_track.track_id
   end
