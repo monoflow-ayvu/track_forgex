@@ -70,4 +70,71 @@ defmodule TrackForgex.Trackers.ByteTrackTest do
       assert last.state == :tracked
     end
   end
+
+  test "different class_ids do not override each other when sent together" do
+    settings = %ByteTrack.Settings{
+      track_thresh: 0.5,
+      track_buffer: 30,
+      match_thresh: 0.8,
+      det_thresh: 0.6
+    }
+
+    byte_track = ByteTrack.new(settings)
+
+    tracks =
+      ByteTrack.update(byte_track, [
+        %TrackForgex.Utils.Detection{
+          bbox: %TrackForgex.Utils.BBox{x: 100.0, y: 100.0, w: 50.0, h: 100.0},
+          score: 0.9,
+          class_id: 0
+        },
+        %TrackForgex.Utils.Detection{
+          bbox: %TrackForgex.Utils.BBox{x: 100.0, y: 100.0, w: 50.0, h: 100.0},
+          score: 0.85,
+          class_id: 1
+        }
+      ])
+
+    assert length(tracks) == 2
+    [first, last] = tracks
+    assert first.class_id == 0
+    assert last.class_id == 1
+    assert first.track_id != last.track_id
+  end
+
+  test "different class_ids do not override each other when sent separately" do
+    settings = %ByteTrack.Settings{
+      track_thresh: 0.5,
+      track_buffer: 30,
+      match_thresh: 0.8,
+      det_thresh: 0.6
+    }
+
+    byte_track = ByteTrack.new(settings)
+
+    person_detection = [
+      %TrackForgex.Utils.Detection{
+        bbox: %TrackForgex.Utils.BBox{x: 100.0, y: 100.0, w: 50.0, h: 100.0},
+        score: 0.9,
+        class_id: 0
+      }
+    ]
+
+    assert [person_track] = ByteTrack.update(byte_track, person_detection)
+    assert person_track.class_id == 0
+
+    car_detection = [
+      %TrackForgex.Utils.Detection{
+        bbox: %TrackForgex.Utils.BBox{x: 100.0, y: 100.0, w: 50.0, h: 100.0},
+        score: 0.9,
+        class_id: 2
+      }
+    ]
+
+    assert [car_track, person_track] = ByteTrack.update(byte_track, car_detection)
+    assert car_track.class_id == 2
+    assert person_track.class_id == 0
+
+    assert car_track.track_id != person_track.track_id
+  end
 end
