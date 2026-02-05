@@ -70,4 +70,38 @@ defmodule TrackForgex.Trackers.ByteTrackTest do
       assert last.state == :tracked
     end
   end
+
+  test "different class_ids do not override each other" do
+    settings = %ByteTrack.Settings{
+      track_thresh: 0.5,
+      track_buffer: 30,
+      match_thresh: 0.8,
+      det_thresh: 0.6
+    }
+
+    byte_track = ByteTrack.new(settings)
+
+    detections = [
+      %TrackForgex.Utils.Detection{
+        bbox: %TrackForgex.Utils.BBox{x: 100.0, y: 100.0, w: 50.0, h: 100.0},
+        score: 0.9,
+        class_id: 0
+      },
+      %TrackForgex.Utils.Detection{
+        bbox: %TrackForgex.Utils.BBox{x: 100.0, y: 100.0, w: 50.0, h: 100.0},
+        score: 0.85,
+        class_id: 1
+      }
+    ]
+
+    tracks = ByteTrack.update(byte_track, detections)
+
+    assert length(tracks) == 2
+    [first, last] = tracks
+
+    assert first.class_id == 0
+    assert last.class_id == 1
+
+    assert first.track_id != last.track_id
+  end
 end
