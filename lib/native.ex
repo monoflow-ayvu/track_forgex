@@ -12,7 +12,7 @@ defmodule TrackForgex.Native do
     base_url: "https://github.com/monoflow-ayvu/track_forgex/releases/download/v#{@version}",
     force_build: System.get_env("TRACK_FORGE_FORCE_BUILD") in ["1", "true"],
     version: @version,
-    nif_versions: ~w(2.15 2.16 2.17),
+    nif_versions: ~w(2.15 2.17),
     targets: ~w(
       aarch64-apple-darwin
       aarch64-unknown-linux-gnu
