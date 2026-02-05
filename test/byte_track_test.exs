@@ -81,20 +81,22 @@ defmodule TrackForgex.Trackers.ByteTrackTest do
 
     byte_track = ByteTrack.new(settings)
 
-    detections = [
+    ByteTrack.update(byte_track, [
       %TrackForgex.Utils.Detection{
         bbox: %TrackForgex.Utils.BBox{x: 100.0, y: 100.0, w: 50.0, h: 100.0},
         score: 0.9,
         class_id: 0
-      },
-      %TrackForgex.Utils.Detection{
-        bbox: %TrackForgex.Utils.BBox{x: 100.0, y: 100.0, w: 50.0, h: 100.0},
-        score: 0.85,
-        class_id: 1
       }
-    ]
+    ])
 
-    tracks = ByteTrack.update(byte_track, detections)
+    tracks =
+      ByteTrack.update(byte_track, [
+        %TrackForgex.Utils.Detection{
+          bbox: %TrackForgex.Utils.BBox{x: 100.0, y: 100.0, w: 50.0, h: 100.0},
+          score: 0.85,
+          class_id: 1
+        }
+      ])
 
     assert length(tracks) == 2
     [first, last] = tracks
