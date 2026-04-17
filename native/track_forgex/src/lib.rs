@@ -24,6 +24,9 @@ struct Detection {
 
 struct ByteTrackInstance {
     tracker: Mutex<ByteTrack>,
+    /// Pre-allocated buffer for IoU cost matrix reuse (avoids per-frame allocation).
+    #[allow(dead_code)]
+    cost_matrix: Vec<f32>,
 }
 
 impl Resource for ByteTrackInstance {}
@@ -51,6 +54,7 @@ fn create_byte_track(settings: ByteTrackSettings) -> ResourceArc<ByteTrackInstan
     );
     ResourceArc::new(ByteTrackInstance {
         tracker: Mutex::new(tracker),
+        cost_matrix: Vec::new(),
     })
 }
 
@@ -99,8 +103,9 @@ fn byte_track_update(
 
     let mut tracker = instance.tracker.lock().map_err(|_| rustler::Error::Term(Box::new("Mutex lock poisoned")))?;
     let results = tracker.update(detections_converted);
-    let results_converted: Vec<ByteTrackDetectionResult> = results.into_iter().map(|result| {
-        ByteTrackDetectionResult {
+    let mut results_converted = Vec::with_capacity(results.len());
+    for result in results {
+        results_converted.push(ByteTrackDetectionResult {
             bbox: BBox {
                 x: result.tlwh[0],
                 y: result.tlwh[1],
@@ -120,8 +125,8 @@ fn byte_track_update(
             frame_id: result.frame_id,
             start_frame: result.start_frame,
             tracklet_len: result.tracklet_len,
-        }
-    }).collect();
+        });
+    }
     Ok(results_converted)
 }
 

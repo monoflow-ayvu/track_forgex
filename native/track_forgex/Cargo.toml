@@ -15,6 +15,7 @@ trackforge = { git = "https://github.com/fermuch/trackforge.git", branch = "main
 
 [features]
 default = ["nif_version_2_15"]
+sg2002 = ["rustler/nif_version_2_15"]
 nif_version_2_15 = ["rustler/nif_version_2_15"]
 nif_version_2_16 = ["rustler/nif_version_2_16"]
 nif_version_2_17 = ["rustler/nif_version_2_17"]
