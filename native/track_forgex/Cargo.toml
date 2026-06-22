@@ -10,7 +10,7 @@ edition = "2021"
 crate-type = ["cdylib"]
 
 [dependencies]
-rustler = { version = "0.37.2", default-features = false, features = ["derive"] }
+rustler = { version = "0.38.0", default-features = false, features = ["derive"] }
 trackforge = { git = "https://github.com/fermuch/trackforge.git", branch = "main" }
 
 [features]
